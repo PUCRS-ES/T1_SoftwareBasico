@@ -19,18 +19,33 @@
 #include <GL/glut.h>
 #endif
 
+#define TAM_MAX 20
+#define BUFFER_SIZE 200
+
 typedef struct{
     float x,y,z;
 } Ponto;
+
+typedef struct{
+    Ponto ponto;
+    int identificador;
+} Marcador;
+
+typedef struct{
+    Marcador marcadores[0];
+    int identificador;
+} Frame;
 
 typedef struct {
     int verticeInicial, verticeFinal;
 } Segmento;
 
+typedef struct {
+    Frame frames[0];
+} Filme;
+
 GLfloat ratio;
 GLfloat angY, angX;
-
-#define TAM_MAX 20
 
 Ponto Marcadores3D[TAM_MAX];
 Segmento Ligacoes[TAM_MAX];
@@ -49,6 +64,20 @@ int x_ini=0,y_ini=0,bot=0;
 // **********************************************************************
 void GeraPontosAleatorios()
 {
+    char buffer[BUFFER_SIZE];
+    char *nome_arquivo = "Pequeno.spd";
+    FILE *fp = fopen(nome_arquivo, "r");
+    if(fp == NULL)
+        printf("Erro! Não foi possível abrir o arquivo %s.", nome_arquivo);
+    else {
+        while(!feof(fp)) {
+            fgets(buffer, BUFFER_SIZE, fp);
+            if (buffer[0] != '\0')
+                printf("%s\n", buffer);
+            buffer[0] = '\0';
+        }
+    }
+
     int i;
     srand(time(0));
     for (i=0; i< TAM_MAX; i++)
