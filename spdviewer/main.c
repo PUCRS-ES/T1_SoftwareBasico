@@ -70,6 +70,27 @@ void GeraPontosAleatorios()
     if(fp == NULL)
         printf("Erro! Não foi possível abrir o arquivo %s.", nome_arquivo);
     else {
+        //Ignora as primeiras quatro linhas do arquivo
+        fgets(buffer, BUFFER_SIZE, fp);
+        fgets(buffer, BUFFER_SIZE, fp);
+        fgets(buffer, BUFFER_SIZE, fp);
+        fgets(buffer, BUFFER_SIZE, fp);
+
+        //le o numero de marcadores esperados em cada frame
+        fgets(buffer, BUFFER_SIZE, fp);
+        int string_size = strlen(buffer);
+        int index = string_size;
+        char caracter_atual = "\0";
+        while (caracter_atual != ' ')
+            caracter_atual = buffer[index--];
+        index++;
+        char *valor = malloc(string_size - index);
+        strcpy(valor, &buffer[index]);
+        int numero = atoi(valor);
+
+        //acho que esta lendo corretamente, mas seria interessante testar com outros numeros maiores
+
+
         while(!feof(fp)) {
             fgets(buffer, BUFFER_SIZE, fp);
             if (buffer[0] != '\0')
