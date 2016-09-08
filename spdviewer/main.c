@@ -80,15 +80,44 @@ void GeraPontosAleatorios()
         fgets(buffer, BUFFER_SIZE, fp);
         int string_size = strlen(buffer);
         int index = string_size;
-        char caracter_atual = "\0";
+        char caracter_atual = '\0';
         while (caracter_atual != ' ')
-            caracter_atual = buffer[index--];
+            caracter_atual = buffer[--index];
         index++;
         char *valor = malloc(string_size - index);
         strcpy(valor, &buffer[index]);
-        int numero = atoi(valor);
+        int numero_de_marcadores = atoi(valor);
+        free(valor);
 
-        //acho que esta lendo corretamente, mas seria interessante testar com outros numeros maiores
+        //le o numero de frames
+        fgets(buffer, BUFFER_SIZE, fp);
+        string_size = strlen(buffer);
+        index = string_size;
+        caracter_atual = '\0';
+        while (caracter_atual != ' ')
+            caracter_atual = buffer[--index];
+        index++;
+        *valor = malloc(string_size - index);
+        strcpy(valor, &buffer[index]);
+        int numero_de_frames = atoi(valor);
+        free(valor);
+
+        //le o numero de frames esperado
+        int i = 0;
+        for (i = 0; i < numero_de_frames; i++) {
+            //por hora vou assumir que o buffer tem um tamanho suficiente para ler toda a linha de uma so vez
+            fgets(buffer, BUFFER_SIZE, fp);
+
+            //posiciona o cursor (index) exatamente sobre o numero total de marcadores do frame
+            int contador_espacos = 0;
+            index = 0;
+            while (contador_espacos < 4) {
+                if (buffer[index++] == ' ')
+                    contador_espacos++;
+            }
+        }
+
+
 
 
         while(!feof(fp)) {

@@ -347,7 +347,7 @@
 	<GLUT/glut.h>
 	<GL/glut.h>
 
-1473253285 source:/home/vinicius/Trabalho_Software_basico/spdviewer/main.c
+1473308777 source:/home/vinicius/Trabalho_Software_basico/spdviewer/main.c
 	<stdio.h>
 	<stdlib.h>
 	<windows.h>
