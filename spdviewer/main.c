@@ -32,7 +32,7 @@ typedef struct{
 } Marcador;
 
 typedef struct{
-    Marcador marcadores[0];
+    Marcador marcadores[3];
     int identificador;
 } Frame;
 
@@ -41,7 +41,7 @@ typedef struct {
 } Segmento;
 
 typedef struct {
-    Frame frames[0];
+    Frame frames[5];
 } Filme;
 
 GLfloat ratio;
@@ -64,6 +64,8 @@ int x_ini=0,y_ini=0,bot=0;
 // **********************************************************************
 void GeraPontosAleatorios()
 {
+    Filme filme;
+
     char buffer[BUFFER_SIZE];
     char *nome_arquivo = "Pequeno.spd";
     FILE *fp = fopen(nome_arquivo, "r");
@@ -109,11 +111,16 @@ void GeraPontosAleatorios()
             int identificador_frame, constante_zero, total_de_marcadores;
             float tempo;
             fscanf(fp, "%s %d %f %d %d", str1, &identificador_frame, &tempo, &constante_zero, &total_de_marcadores);
+            filme.frames[i].identificador = identificador_frame;
 
             int j, identificador_marcador;
             float x, y, z;
             for (j = 0; j < total_de_marcadores; j++) {
                 fscanf(fp, "%f %f %f %d\n", &x, &y, &z, &identificador_marcador);
+                filme.frames[i].marcadores[j].identificador = identificador_marcador;
+                filme.frames[i].marcadores[j].ponto.x = x;
+                filme.frames[i].marcadores[j].ponto.y = y;
+                filme.frames[i].marcadores[j].ponto.z = z;
             }
         }
 
