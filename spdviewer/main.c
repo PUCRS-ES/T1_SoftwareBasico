@@ -103,28 +103,27 @@ void GeraPontosAleatorios()
         free(valor);
 
         //le o numero de frames esperado
+        char str1[20];
         int i = 0;
         for (i = 0; i < numero_de_frames; i++) {
-            //por hora vou assumir que o buffer tem um tamanho suficiente para ler toda a linha de uma so vez
-            fgets(buffer, BUFFER_SIZE, fp);
+            int identificador_frame, constante_zero, total_de_marcadores;
+            float tempo;
+            fscanf(fp, "%s %d %f %d %d", str1, &identificador_frame, &tempo, &constante_zero, &total_de_marcadores);
 
-            //posiciona o cursor (index) exatamente sobre o numero total de marcadores do frame
-            int contador_espacos = 0;
-            index = 0;
-            while (contador_espacos < 4) {
-                if (buffer[index++] == ' ')
-                    contador_espacos++;
+            int j, identificador_marcador;
+            float x, y, z;
+            for (j = 0; j < total_de_marcadores; j++) {
+                fscanf(fp, "%f %f %f %d\n", &x, &y, &z, &identificador_marcador);
             }
         }
 
+        //le a quantidade de segmentos
+        int quantidade_de_segmentos;
+        fscanf(fp, "%s %d\n", str1, &quantidade_de_segmentos);
 
-
-
-        while(!feof(fp)) {
-            fgets(buffer, BUFFER_SIZE, fp);
-            if (buffer[0] != '\0')
-                printf("%s\n", buffer);
-            buffer[0] = '\0';
+        int j, marcador1, marcador2;
+        for (j = 0; j < quantidade_de_segmentos; j++) {
+            fscanf(fp, "%s %d %d\n", str1, &marcador1, &marcador2);
         }
     }
 
