@@ -65,6 +65,7 @@ int x_ini=0,y_ini=0,bot=0;
 void GeraPontosAleatorios()
 {
     Filme filme;
+    int total_de_marcadores;
 
     char buffer[BUFFER_SIZE];
     char *nome_arquivo = "Pequeno.spd";
@@ -108,7 +109,7 @@ void GeraPontosAleatorios()
         char str1[20];
         int i = 0;
         for (i = 0; i < numero_de_frames; i++) {
-            int identificador_frame, constante_zero, total_de_marcadores;
+            int identificador_frame, constante_zero;
             float tempo;
             fscanf(fp, "%s %d %f %d %d", str1, &identificador_frame, &tempo, &constante_zero, &total_de_marcadores);
             filme.frames[i].identificador = identificador_frame;
@@ -128,24 +129,21 @@ void GeraPontosAleatorios()
         int quantidade_de_segmentos;
         fscanf(fp, "%s %d\n", str1, &quantidade_de_segmentos);
 
+        // Gera as ligações
         int j, marcador1, marcador2;
         for (j = 0; j < quantidade_de_segmentos; j++) {
             fscanf(fp, "%s %d %d\n", str1, &marcador1, &marcador2);
+            Ligacoes[j].verticeInicial = marcador1;
+            Ligacoes[j].verticeFinal = marcador2;
         }
     }
 
     int i;
-    srand(time(0));
-    for (i=0; i< TAM_MAX; i++)
+    for (i=0; i< total_de_marcadores; i++)
     {
-        float x,y,z;
-        x = (rand() % 10000)/10000.0 - 0.1;
-        y = (rand() % 10000)/10000.0 - 0.1;
-        z = (rand() % 10000)/10000.0 - 0.1;
-        Marcadores3D[i].x = x;
-        Marcadores3D[i].y = y;
-        Marcadores3D[i].z = z;
-        printf("%f %f %f\n", x,y,z);
+        Marcadores3D[i].x = filme.frames[0].marcadores[i].ponto.x;
+        Marcadores3D[i].y = filme.frames[0].marcadores[i].ponto.y;
+        Marcadores3D[i].z = filme.frames[0].marcadores[i].ponto.z;
     }
     // Define a posição para Alvo e Observador em função dos pontos gerados
     Marcadores3D[1].x = 1;
@@ -156,17 +154,6 @@ void GeraPontosAleatorios()
     Obs.z = -2.7;
     rotX = 54;
     rotY = -7;
-
-    // Gera as ligações
-    for (i=0; i< TAM_MAX; i++)
-    {
-        int inicio, fim;
-        inicio = rand() % TAM_MAX;
-        fim = rand() % TAM_MAX;
-        Ligacoes[i].verticeInicial = inicio;
-        Ligacoes[i].verticeFinal = fim;
-        printf("%d %d\n",inicio,fim);
-    }
 
 }
 // **********************************************************************
