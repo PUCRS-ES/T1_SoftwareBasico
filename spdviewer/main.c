@@ -32,7 +32,7 @@ typedef struct{
 } Marcador;
 
 typedef struct{
-    Marcador marcadores[3];
+    Marcador marcadores[10];
     int identificador;
 } Frame;
 
@@ -41,7 +41,7 @@ typedef struct {
 } Segmento;
 
 typedef struct {
-    Frame frames[5];
+    Frame frames[30000];
 } Filme;
 
 Filme filme;
@@ -91,7 +91,7 @@ void GeraPontosAleatorios()
         index++;
         char *valor = malloc(string_size - index);
         strcpy(valor, &buffer[index]);
-        int numero_de_marcadores = atoi(valor);
+        total_de_marcadores = atoi(valor);
         free(valor);
 
         //le o numero de frames
@@ -111,19 +111,19 @@ void GeraPontosAleatorios()
         char str1[20];
         int i = 0;
         for (i = 0; i < total_de_frames; i++) {
-            int identificador_frame, constante_zero;
+            int identificador_frame, constante_zero, marcadores_neste_frame;
             float tempo;
-            fscanf(fp, "%s %d %f %d %d", str1, &identificador_frame, &tempo, &constante_zero, &total_de_marcadores);
+            fscanf(fp, "%s %d %f %d %d", str1, &identificador_frame, &tempo, &constante_zero, &marcadores_neste_frame);
             filme.frames[i].identificador = identificador_frame;
 
             int j, identificador_marcador;
             float x, y, z;
-            for (j = 0; j < total_de_marcadores; j++) {
+            for (j = 0; j < marcadores_neste_frame; j++) {
                 fscanf(fp, "%f %f %f %d\n", &x, &y, &z, &identificador_marcador);
-                filme.frames[i].marcadores[j].identificador = identificador_marcador;
-                filme.frames[i].marcadores[j].ponto.x = x;
-                filme.frames[i].marcadores[j].ponto.y = y;
-                filme.frames[i].marcadores[j].ponto.z = z;
+                filme.frames[i].marcadores[identificador_marcador].identificador = identificador_marcador;
+                filme.frames[i].marcadores[identificador_marcador].ponto.x = x;
+                filme.frames[i].marcadores[identificador_marcador].ponto.y = y;
+                filme.frames[i].marcadores[identificador_marcador].ponto.z = z;
             }
         }
 
@@ -410,7 +410,16 @@ void keyboard ( unsigned char key, int x, int y )
     default:
         break;
     }
+
     printf("Frame atual: %d\n", frame_atual);
+    int i;
+    for (i = 0; i < total_de_marcadores; i++) {
+        float x = filme.frames[frame_atual].marcadores[i].ponto.x;
+        float y = filme.frames[frame_atual].marcadores[i].ponto.y;
+        float z = filme.frames[frame_atual].marcadores[i].ponto.z;
+        printf("Marcador %d: \t%f \t%f \t%f \n", i, x, y, z);
+    }
+    printf("\n");
 }
 
 // **********************************************************************
