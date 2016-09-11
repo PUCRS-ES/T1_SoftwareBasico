@@ -70,7 +70,7 @@ void GeraPontosAleatorios()
     frame_atual = 0;
 
     char buffer[BUFFER_SIZE];
-    char *nome_arquivo = "Pequeno.spd";
+    char *nome_arquivo = "1.spd";
     FILE *fp = fopen(nome_arquivo, "r");
     if(fp == NULL)
         printf("Erro! Não foi possível abrir o arquivo %s.", nome_arquivo);
@@ -115,6 +115,8 @@ void GeraPontosAleatorios()
             float tempo;
             fscanf(fp, "%s %d %f %d %d", str1, &identificador_frame, &tempo, &constante_zero, &marcadores_neste_frame);
             filme.frames[i].identificador = identificador_frame;
+            if (marcadores_neste_frame != total_de_marcadores)
+                printf("Warning: frame %d possui %d marcadores. Esperava %d.\n", identificador_frame, marcadores_neste_frame, total_de_marcadores);
 
             int j, identificador_marcador;
             float x, y, z;
