@@ -44,6 +44,9 @@ typedef struct {
     Frame frames[5];
 } Filme;
 
+Filme filme;
+int total_de_marcadores, frame_atual, numero_de_frames;
+
 GLfloat ratio;
 GLfloat angY, angX;
 
@@ -64,8 +67,7 @@ int x_ini=0,y_ini=0,bot=0;
 // **********************************************************************
 void GeraPontosAleatorios()
 {
-    Filme filme;
-    int total_de_marcadores;
+    frame_atual = 0;
 
     char buffer[BUFFER_SIZE];
     char *nome_arquivo = "Pequeno.spd";
@@ -102,7 +104,7 @@ void GeraPontosAleatorios()
         index++;
         *valor = malloc(string_size - index);
         strcpy(valor, &buffer[index]);
-        int numero_de_frames = atoi(valor);
+        numero_de_frames = atoi(valor);
         free(valor);
 
         //le o numero de frames esperado
@@ -138,17 +140,12 @@ void GeraPontosAleatorios()
         }
     }
 
-    int i;
-    for (i=0; i< total_de_marcadores; i++)
-    {
-        Marcadores3D[i].x = filme.frames[0].marcadores[i].ponto.x;
-        Marcadores3D[i].y = filme.frames[0].marcadores[i].ponto.y;
-        Marcadores3D[i].z = filme.frames[0].marcadores[i].ponto.z;
-    }
+    atualiza_marcadores();
+
     // Define a posição para Alvo e Observador em função dos pontos gerados
-    Marcadores3D[1].x = 1;
-    Marcadores3D[1].y = 1;
-    Marcadores3D[1].z = 1;
+    //Marcadores3D[1].x = 1;
+    //Marcadores3D[1].y = 1;
+    //Marcadores3D[1].z = 1;
     Obs.x = 0;
     Obs.y = 0.5;
     Obs.z = -2.7;
@@ -156,6 +153,19 @@ void GeraPontosAleatorios()
     rotY = -7;
 
 }
+
+void atualiza_marcadores();
+void atualiza_marcadores()
+{
+    int i;
+    for (i=0; i< total_de_marcadores; i++)
+    {
+        Marcadores3D[i].x = filme.frames[frame_atual].marcadores[i].ponto.x;
+        Marcadores3D[i].y = filme.frames[frame_atual].marcadores[i].ponto.y;
+        Marcadores3D[i].z = filme.frames[frame_atual].marcadores[i].ponto.z;
+    }
+}
+
 // **********************************************************************
 //  Desenha um ponto em 3D
 // **********************************************************************
@@ -193,7 +203,7 @@ void DesenhaSegmento(Ponto P1, Ponto P2)
 // **********************************************************************
 void DesenhaVetorSegmentos(Segmento V[], int qtd)
 {
-    printf("=========\n");
+    //printf("=========\n");
     Ponto P1, P2;
     int inicio, fim;
     int i;
@@ -204,7 +214,7 @@ void DesenhaVetorSegmentos(Segmento V[], int qtd)
         P1 = Marcadores3D[inicio];
         P2 = Marcadores3D[fim];
         DesenhaSegmento(P1, P2);
-        printf("%d %d\n", inicio, fim);
+        //printf("%d %d\n", inicio, fim);
     }
 }
 
@@ -383,10 +393,24 @@ void keyboard ( unsigned char key, int x, int y )
     case 27:        // Termina o programa qdo
         exit ( 0 );   // a tecla ESC for pressionada
         break;
-
+    case 112: //tecla P
+        if (frame_atual < numero_de_frames - 1) {
+            frame_atual++;
+            atualiza_marcadores();
+            display();
+        }
+        break;
+    case 111: //tecla O
+        if (frame_atual > 0) {
+            frame_atual--;
+            atualiza_marcadores();
+            display();
+        }
+        break;
     default:
         break;
     }
+    printf("Frame atual: %d\n", frame_atual);
 }
 
 // **********************************************************************
