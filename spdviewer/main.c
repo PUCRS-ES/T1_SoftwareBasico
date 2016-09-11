@@ -45,7 +45,7 @@ typedef struct {
 } Filme;
 
 Filme filme;
-int total_de_marcadores, frame_atual, numero_de_frames;
+int total_de_marcadores, frame_atual, total_de_frames;
 
 GLfloat ratio;
 GLfloat angY, angX;
@@ -104,13 +104,13 @@ void GeraPontosAleatorios()
         index++;
         *valor = malloc(string_size - index);
         strcpy(valor, &buffer[index]);
-        numero_de_frames = atoi(valor);
+        total_de_frames = atoi(valor);
         free(valor);
 
         //le o numero de frames esperado
         char str1[20];
         int i = 0;
-        for (i = 0; i < numero_de_frames; i++) {
+        for (i = 0; i < total_de_frames; i++) {
             int identificador_frame, constante_zero;
             float tempo;
             fscanf(fp, "%s %d %f %d %d", str1, &identificador_frame, &tempo, &constante_zero, &total_de_marcadores);
@@ -394,7 +394,7 @@ void keyboard ( unsigned char key, int x, int y )
         exit ( 0 );   // a tecla ESC for pressionada
         break;
     case 112: //tecla P
-        if (frame_atual < numero_de_frames - 1) {
+        if (frame_atual < total_de_frames - 1) {
             frame_atual++;
             atualiza_marcadores();
             display();
