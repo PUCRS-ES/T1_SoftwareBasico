@@ -152,8 +152,8 @@ void GeraPontosAleatorios()
     Obs.x = 0;
     Obs.y = 0.5;
     Obs.z = -2.7;
-    rotX = 54;
-    rotY = -7;
+    rotX = 39;
+    rotY = 110;
 
 }
 
