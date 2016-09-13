@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #ifdef WIN32
 #include <windows.h>    // includes only in MSWindows not in UNIX
@@ -29,6 +30,7 @@ typedef struct{
 typedef struct{
     Ponto ponto;
     int identificador;
+    bool visivel;
 } Marcador;
 
 typedef struct{
@@ -45,7 +47,8 @@ typedef struct {
 } Filme;
 
 Filme filme;
-int total_de_marcadores, frame_atual, total_de_frames;
+int total_de_marcadores, frame_atual, total_de_frames, quantidade_de_segmentos;
+Segmento ligacoes_visiveis_ou_nao[TAM_MAX];
 
 GLfloat ratio;
 GLfloat angY, angX;
@@ -70,7 +73,7 @@ void GeraPontosAleatorios()
     frame_atual = 0;
 
     char buffer[BUFFER_SIZE];
-    char *nome_arquivo = "1.spd";
+    char *nome_arquivo = "4e.spd";
     FILE *fp = fopen(nome_arquivo, "r");
     if(fp == NULL)
         printf("Erro! Não foi possível abrir o arquivo %s.", nome_arquivo);
@@ -126,28 +129,26 @@ void GeraPontosAleatorios()
                 filme.frames[i].marcadores[identificador_marcador].ponto.x = x;
                 filme.frames[i].marcadores[identificador_marcador].ponto.y = y;
                 filme.frames[i].marcadores[identificador_marcador].ponto.z = z;
+                filme.frames[i].marcadores[identificador_marcador].visivel = true;
             }
         }
 
         //le a quantidade de segmentos
-        int quantidade_de_segmentos;
         fscanf(fp, "%s %d\n", str1, &quantidade_de_segmentos);
 
-        // Gera as ligações
+        // Armazena as ligacoes (visiveis ou nao)
         int j, marcador1, marcador2;
         for (j = 0; j < quantidade_de_segmentos; j++) {
             fscanf(fp, "%s %d %d\n", str1, &marcador1, &marcador2);
-            Ligacoes[j].verticeInicial = marcador1;
-            Ligacoes[j].verticeFinal = marcador2;
+            ligacoes_visiveis_ou_nao[j].verticeInicial = marcador1;
+            ligacoes_visiveis_ou_nao[j].verticeFinal = marcador2;
         }
     }
 
     atualiza_marcadores();
+    atualiza_ligacoes();
 
     // Define a posição para Alvo e Observador em função dos pontos gerados
-    //Marcadores3D[1].x = 1;
-    //Marcadores3D[1].y = 1;
-    //Marcadores3D[1].z = 1;
     Obs.x = 0;
     Obs.y = 0.5;
     Obs.z = -2.7;
@@ -165,6 +166,28 @@ void atualiza_marcadores()
         Marcadores3D[i].x = filme.frames[frame_atual].marcadores[i].ponto.x;
         Marcadores3D[i].y = filme.frames[frame_atual].marcadores[i].ponto.y;
         Marcadores3D[i].z = filme.frames[frame_atual].marcadores[i].ponto.z;
+    }
+}
+
+void atualiza_ligacoes();
+void atualiza_ligacoes()
+{
+    //Limpa a lista de ligacoes que serao renderizadas
+    int j;
+    for (j = 0; j < quantidade_de_segmentos; j++) {
+        Ligacoes[j].verticeInicial = 0;
+        Ligacoes[j].verticeFinal = 0;
+    }
+
+    //armazena apenas os segmentos que devem ser renderizados (estao visiveis)
+    for (j = 0; j < quantidade_de_segmentos; j++) {
+        int inicio = ligacoes_visiveis_ou_nao[j].verticeInicial;
+        int fim = ligacoes_visiveis_ou_nao[j].verticeFinal;
+
+        if (filme.frames[frame_atual].marcadores[inicio].visivel && filme.frames[frame_atual].marcadores[fim].visivel) {
+            Ligacoes[j].verticeInicial = ligacoes_visiveis_ou_nao[j].verticeInicial;
+            Ligacoes[j].verticeFinal = ligacoes_visiveis_ou_nao[j].verticeFinal;
+        }
     }
 }
 
@@ -399,6 +422,7 @@ void keyboard ( unsigned char key, int x, int y )
         if (frame_atual < total_de_frames - 1) {
             frame_atual++;
             atualiza_marcadores();
+            atualiza_ligacoes();
             display();
         }
         break;
@@ -406,6 +430,7 @@ void keyboard ( unsigned char key, int x, int y )
         if (frame_atual > 0) {
             frame_atual--;
             atualiza_marcadores();
+            atualiza_ligacoes();
             display();
         }
         break;
