@@ -72,7 +72,7 @@ void GeraPontosAleatorios()
 {
     frame_atual = 0;
 
-    char buffer[BUFFER_SIZE];
+    char buffer[BUFFER_SIZE], str1[TAM_MAX], str2[TAM_MAX];
     char *nome_arquivo = "4e.spd";
     FILE *fp = fopen(nome_arquivo, "r");
     if(fp == NULL)
@@ -85,33 +85,12 @@ void GeraPontosAleatorios()
         fgets(buffer, BUFFER_SIZE, fp);
 
         //le o numero de marcadores esperados em cada frame
-        fgets(buffer, BUFFER_SIZE, fp);
-        int string_size = strlen(buffer);
-        int index = string_size;
-        char caracter_atual = '\0';
-        while (caracter_atual != ' ')
-            caracter_atual = buffer[--index];
-        index++;
-        char *valor = malloc(string_size - index);
-        strcpy(valor, &buffer[index]);
-        total_de_marcadores = atoi(valor);
-        free(valor);
+        fscanf(fp, "%s %d\n", str1, &total_de_marcadores);
 
         //le o numero de frames
-        fgets(buffer, BUFFER_SIZE, fp);
-        string_size = strlen(buffer);
-        index = string_size;
-        caracter_atual = '\0';
-        while (caracter_atual != ' ')
-            caracter_atual = buffer[--index];
-        index++;
-        *valor = malloc(string_size - index);
-        strcpy(valor, &buffer[index]);
-        total_de_frames = atoi(valor);
-        free(valor);
+        fscanf(fp, "%s %s %d\n", str1, str2, &total_de_frames);
 
         //le o numero de frames esperado
-        char str1[20];
         int i = 0;
         for (i = 0; i < total_de_frames; i++) {
             int identificador_frame, constante_zero, marcadores_neste_frame;
